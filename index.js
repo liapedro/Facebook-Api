@@ -1,5 +1,5 @@
-// App ID: 227915907640035
-// App Secrect: 4a102434b3199285971661762a12b239
+// App ID: 
+// App Secrect: 
 
 //Configurar Servidor para usar dependencias
 var express = require("express");
@@ -30,8 +30,8 @@ app.set('view engine', 'pug');
 // Configurar autenticacion
 	// 1.- Definiar la estrategia a utilizar
 	passport.use(new FacebookStrategy({
-		clientID: '227915907640035',
-		clientSecret: '4a102434b3199285971661762a12b239',
+		clientID: 'clienteID',
+		clientSecret: 'clienteSecret',
 		callbackURL: 'http://localhost:8000/auth/facebook/callback'
 	}, function(accessToken, refreshToken, profile, cb){
 		
