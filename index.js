@@ -8,6 +8,7 @@ var passport = require("passport");
 var cookieSession = require("cookie-session");
 var FacebookStrategy = require("passport-facebook").Strategy;
 var graph = require("fbgraph");
+var User = require("./models/user");
 
 var app = express();
 
@@ -36,13 +37,23 @@ app.set('view engine', 'pug');
 		
 		// Guardar en la base de datos
 		 
+		User.findOrCreate({uid: profile.id}, {
+			name: profile.displayName,
+			provider: 'facebook',
+			accessToken: accessToken
+		}, function(err,user){
+			// Llmar la funcion cb que completa la autenticacion
+			cb(null,user);
+
+		});
+
+
 		// Guardar al usuario en la sesion
-		var user = {
+		/*var user = {
 			accessToken: accessToken,
 			profile: profile
-		}
-		// Llmar la funcion cb que completa la autenticacion
-		cb(null,user);
+		}*/
+		
 	}
 
 	));
@@ -65,7 +76,7 @@ app.get('/auth/facebook', passport.authenticate('facebook',{}));
 // recibir respuesta del facebook
 app.get('/auth/facebook/callback', 
 	passport.authenticate('facebook',{failureRedirect:'/'}),
-	function(req,res){
+	function(req,res){ // Que deseamos hacer una vez que el proceso de autenticación haya terminado
 		console.log(req.session);
 		res.redirect('/');
 	});
@@ -87,6 +98,9 @@ app.get('/', function(req,res){
 	}
 	
 });
+
+// Publicar en el muro
+
 
 
 
