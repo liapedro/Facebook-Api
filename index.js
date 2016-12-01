@@ -1,5 +1,5 @@
-// App ID: 
-// App Secrect: 
+// App ID: 227915907640035
+// App Secrect: 33226d71aa00b40bee2da443c74eb0f1
 
 //Configurar Servidor para usar dependencias
 var express = require("express");
@@ -30,8 +30,8 @@ app.set('view engine', 'pug');
 // Configurar autenticacion
 	// 1.- Definiar la estrategia a utilizar
 	passport.use(new FacebookStrategy({
-		clientID: 'clienteID',
-		clientSecret: 'clienteSecret',
+		clientID: '227915907640035',
+		clientSecret: '33226d71aa00b40bee2da443c74eb0f1',
 		callbackURL: 'http://localhost:8000/auth/facebook/callback'
 	}, function(accessToken, refreshToken, profile, cb){
 		
@@ -71,7 +71,9 @@ app.set('view engine', 'pug');
 
 
 // Definir y utilizar el flujo de autenticacion
-app.get('/auth/facebook', passport.authenticate('facebook',{}));
+app.get('/auth/facebook', passport.authenticate('facebook',{
+	scope: ['publish_actions', 'user_friends']
+}));
 
 // recibir respuesta del facebook
 app.get('/auth/facebook/callback', 
@@ -100,9 +102,46 @@ app.get('/', function(req,res){
 });
 
 // Publicar en el muro
+app.post("/logros", function(req,res){
+	var logro = req.body.logro;
 
+	graph.setAccessToken(req.session.passport.user.accessToken);
 
+	graph.post("/feed",{message: logro}, function(err, graphResponse){
+		console.log(graphResponse);
 
+		res.redirect("/");
+	});
+});
+
+// Buscar Amigos
+
+app.get("/friends", function(req,res){
+	graph.setAccessToken(req.session.passport.user.accessToken);
+
+	graph.get("/me/friends", function(err, graphResponse){
+		res.json(graphResponse);
+
+		//Extraer ID del arreglo data de graphResponse
+		var ids = graphResponse.data.map(function(el){
+			return el.id;
+
+		});
+
+		//Buscar en la coleccion Usuarios, los que tengan un uid =  a los id que obtuvimos
+		User.find({
+			'uid':{
+				$in: ids
+			}
+		}, function(err, users){
+				res.render('friends',{users: users});
+		});
+
+		// Mostrar los usuarios encontrados
+		 
+		
+	});
+});
 
 // Pones a escuchar a nuestro servidor en el puerto 8000
 app.listen(8000, function(){

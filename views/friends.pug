@@ -17,11 +17,10 @@ html
 								a(href="/auth/close") Cerrar Sesión
 
 			section
-				h1 Awesome Profiles
-				p Cuentanos tus logros mas increibles
+				h1 Estos sons tus mejores amigos.
 
 				.row
-					.col-xs-6(style="float:none")
-						form(action="/logros" method="POST")
-							input(type="text" clas="form-control" placeholder="Comparte tu logro mas importante del día" name="logo")
-							input(type="submit" value="Compartir Logro" class="btn btn-info" style="margin-top:20px;")
+					for user in users
+						.col-xs-6.text-center
+							img(src='http://graph.facebook.com/'+user.uid+'/picture?height=200')
+							h4=user.name

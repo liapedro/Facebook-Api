@@ -1,5 +1,4 @@
-// OImportar dependencias
-
+// Importar dependencias
 var mongoose = require('mongoose');
 var findOrCreate = require('mongoose-findorcreate');
 var Schema = mongoose.Schema;
@@ -7,7 +6,7 @@ var Schema = mongoose.Schema;
 
 // Conectarnos a MongoDB y la BD
 
-mongoose.connect('mongod://localhost/taller_Facebook');
+//mongoose.connect('mongodb:http://localhost/taller_Facebook');
 
 // Definir el Schema
 
